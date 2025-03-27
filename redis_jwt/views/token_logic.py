@@ -1,12 +1,13 @@
 from django.core.cache import caches
-from django.contrib.auth import authenticate,get_user_model
+from django.contrib.auth import authenticate, get_user_model
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import AccessToken
 from redis_jwt.serializers import LoginSerializer
-
+from redis_jwt.models import ExampleContent
 
 whitelist = caches["whitelist"]
 blacklist = caches["blacklist"]
@@ -34,8 +35,7 @@ class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        authorization = request.headers.get('Authorization', None)
-        token = authorization.split()[1]
+        token = get_token_from_request(request)
         username = whitelist.get(token, None)
         if username:
             whitelist.delete(token)
@@ -44,3 +44,9 @@ class LogoutView(APIView):
         else:
             return Response({"error": "token not found"}, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+def get_token_from_request(request):
+    authorization = request.headers.get('Authorization', None)
+    token = authorization.split()[1]
+    return token
