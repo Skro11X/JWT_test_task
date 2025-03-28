@@ -8,8 +8,7 @@
 Клонируйте репозиторий:
 
 ```shell
-git clone <ссылка на репозиторий>
-cd <папка с репозиторием>
+git clone git@github.com:Skro11X/JWT_test_task.git
 ```
 
 Убедитесь, что у вас установлены Docker и Docker Compose
